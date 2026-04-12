@@ -1,41 +1,39 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+/obj/
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+/compilador
 *.exe
 *.out
 *.app
 
-# debug information files
-*.dwo
+*.log
+*.err
+gmon.out
+/docs/*.aux
+/docs/*.log
+/docs/*.synctex.gz
+/docs/*.fls
+/docs/*.fdb_latexmk
+
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.bak
+*~
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+
+*.zip
+*.tar.gz
+*.rar
+*.7z
