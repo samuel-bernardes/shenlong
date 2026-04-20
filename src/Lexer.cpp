@@ -47,17 +47,25 @@ void Lexer::skipWhitespaceAndComments() {
             } 
             // Comentário de múltiplas linhas /* ... */
             else if (nextChar == '*') {
+                int commentLine = currentLine;
                 advance(); advance(); // Consome '/*'
+                bool closed = false;
                 while (currentChar != EOF) {
                     if (currentChar == '*') {
                         advance();
                         if (currentChar == '/') {
                             advance(); // Consome o '/' final
+                            closed = true;
                             break;
                         }
                     } else {
                         advance();
                     }
+                }
+                if (!closed) {
+                    std::cerr << "ERRO LEXICO: comentario de bloco nao fechado, aberto na linha "
+                              << commentLine << std::endl;
+                    exit(1);
                 }
             } else {
                 break; // É apenas uma barra de divisão '/', o Lexer vai tratar depois
@@ -109,8 +117,8 @@ Token Lexer::getNextToken() {
             advance();
         }
         
-        // Verifica se é um número real (tem ponto e mais números)
-        if (currentChar == '.') {
+        // Verifica se é um número real (tem ponto seguido de pelo menos um dígito)
+        if (currentChar == '.' && isdigit(sourceFile.peek())) {
             numStr += currentChar;
             advance();
             while (isdigit(currentChar)) {
@@ -256,7 +264,7 @@ Token Lexer::getNextToken() {
         token.type = TokenType::ERROR;
         advance();
         break;
-}
+    }
 
     return token;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Token.h"
 #include "Lexer.h"
 #include "SymbolTable.h"
 
@@ -19,9 +20,9 @@ int main(int argc, char* argv[]) {
     std::cout << "TOKENS: " << std::endl;
     do {
         token = lexer.getNextToken();
-        std::cout << "Token: " << static_cast<int>(token.type) 
-                  << " | Lexema: '" << token.lexeme << "'" 
-                  << " | Linha: " << token.line 
+        std::cout << "Token: " << tokenTypeName(token.type)
+                  << " | Lexema: '" << token.lexeme << "'"
+                  << " | Linha: " << token.line
                   << " | Coluna: " << token.column << std::endl;
                   
         // Se houver erro léxico, você pode optar por parar ou reportar e continuar
