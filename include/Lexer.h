@@ -17,6 +17,11 @@ private:
     void advance(); // Lê o próximo caractere
     void skipWhitespaceAndComments(); // Lida com espaços, \n, // e /* */
 
+    bool hasLexicalError = false;
+    std::string errorLexeme = "";
+    int errorLine = 0;
+    int errorColumn = 0;
+
 public:
     Lexer(const std::string& filename, SymbolTable& st);
     ~Lexer();

@@ -47,17 +47,25 @@ void Lexer::skipWhitespaceAndComments() {
             } 
             // Comentário de múltiplas linhas /* ... */
             else if (nextChar == '*') {
+                int commentLine = currentLine;
                 advance(); advance(); // Consome '/*'
+                bool closed = false;
                 while (currentChar != EOF) {
                     if (currentChar == '*') {
                         advance();
                         if (currentChar == '/') {
                             advance(); // Consome o '/' final
+                            closed = true;
                             break;
                         }
                     } else {
                         advance();
                     }
+                }
+                if (!closed) {
+                    std::cerr << "ERRO LEXICO: comentario de bloco nao fechado, aberto na linha "
+                              << commentLine << std::endl;
+                    exit(1);
                 }
             } else {
                 break; // É apenas uma barra de divisão '/', o Lexer vai tratar depois
@@ -109,8 +117,8 @@ Token Lexer::getNextToken() {
             advance();
         }
         
-        // Verifica se é um número real (tem ponto e mais números)
-        if (currentChar == '.') {
+        // Verifica se é um número real (tem ponto seguido de pelo menos um dígito)
+        if (currentChar == '.' && isdigit(sourceFile.peek())) {
             numStr += currentChar;
             advance();
             while (isdigit(currentChar)) {
@@ -150,64 +158,112 @@ Token Lexer::getNextToken() {
     token.lexeme = std::string(1, currentChar);
     
     switch (currentChar) {
-        case '+':
-            token.type = TokenType::PLUS;
-            advance();
-            break;
-        case '-':
-            token.type = TokenType::MINUS;
-            advance();
-            break;
-        case ';':
-            token.type = TokenType::SEMICOLON;
-            advance();
-            break;
-        case '(':
-            token.type = TokenType::LPAREN;
-            advance();
-            break;
-        case ')':
-            token.type = TokenType::RPAREN;
-            advance();
-            break;
-        case '{':
-            token.type = TokenType::LBRACE;
-            advance();
-            break;
-        case '}':
-            token.type = TokenType::RBRACE;
-            advance();
-            break;
-            
-        // Operadores Compostos (Lookahead)
-        case ':':
-            advance();
-            if (currentChar == '=') {
-                token.type = TokenType::ASSIGN;
-                token.lexeme = ":=";
-                advance();
-            } else {
-                token.type = TokenType::ERROR; // ':' sozinho não existe na linguagem
-            }
-            break;
-            
-        case '>':
-            advance();
-            if (currentChar == '=') {
-                token.type = TokenType::GREATER_EQ;
-                token.lexeme = ">=";
-                advance();
-            } else {
-                token.type = TokenType::GREATER;
-            }
-            break;
+    case '+':
+        token.type = TokenType::PLUS;
+        advance();
+        break;
 
-        // TODO: Adicionar os cases para '<' (pode virar <= ou <>), '=', '*', '/', '%', ',', '.'
-            
-        default:
-            token.type = TokenType::ERROR;
+    case '-':
+        token.type = TokenType::MINUS;
+        advance();
+        break;
+
+    case '*':
+        token.type = TokenType::MULT;
+        advance();
+        break;
+
+    case '/':
+        token.type = TokenType::DIV;
+        advance();
+        break;
+
+    case '%':
+        token.type = TokenType::MOD;
+        advance();
+        break;
+
+    case ';':
+        token.type = TokenType::SEMICOLON;
+        advance();
+        break;
+
+    case ',':
+        token.type = TokenType::COMMA;
+        advance();
+        break;
+
+    case '.':
+        token.type = TokenType::DOT;
+        advance();
+        break;
+
+    case '(':
+        token.type = TokenType::LPAREN;
+        advance();
+        break;
+
+    case ')':
+        token.type = TokenType::RPAREN;
+        advance();
+        break;
+
+    case '{':
+        token.type = TokenType::LBRACE;
+        advance();
+        break;
+
+    case '}':
+        token.type = TokenType::RBRACE;
+        advance();
+        break;
+
+    case ':':
+        advance();
+        if (currentChar == '=') {
+            token.type = TokenType::ASSIGN;
+            token.lexeme = ":=";
             advance();
-            break;
+        } else {
+            token.type = TokenType::ERROR;
+        }
+        break;
+
+    case '>':
+        advance();
+        if (currentChar == '=') {
+            token.type = TokenType::GREATER_EQ;
+            token.lexeme = ">=";
+            advance();
+        } else {
+            token.type = TokenType::GREATER;
+        }
+        break;
+
+    case '<':
+        advance();
+        if (currentChar == '=') {
+            token.type = TokenType::LESS_EQ;
+            token.lexeme = "<=";
+            advance();
+        } else if (currentChar == '>') {
+            token.type = TokenType::NOT_EQUAL;
+            token.lexeme = "<>";
+            advance();
+        } else {
+            token.type = TokenType::LESS;
+        }
+        break;
+
+    case '=':
+        token.type = TokenType::EQUAL;
+        advance();
+        break;
+
+    default:
+        token.type = TokenType::ERROR;
+        advance();
+        break;
     }
 
     return token;

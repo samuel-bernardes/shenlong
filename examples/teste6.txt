@@ -1,0 +1,25 @@
+class Teste6 {
+    int n, i, soma, media;
+
+    write("Digite quantos numeros deseja somar: ");
+    read(n);
+
+    soma := 0;
+    i := 1;
+
+    do {
+        write("Digite um numero: ");
+        read(soma);
+        soma := soma + i;
+        i := i + 1;
+    } while (i <= n);
+
+    if (n > 0) {
+        media := soma / n;
+        write("A media dos numeros e: ");
+        write(media);
+    }
+    else {
+        write("Nenhum numero foi informado.");
+    }
+}

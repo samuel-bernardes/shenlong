@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Token.h"
 #include "Lexer.h"
 #include "SymbolTable.h"
 
@@ -19,15 +20,19 @@ int main(int argc, char* argv[]) {
     std::cout << "TOKENS: " << std::endl;
     do {
         token = lexer.getNextToken();
-        std::cout << "Token: " << static_cast<int>(token.type) 
-                  << " | Lexema: '" << token.lexeme << "'" 
-                  << " | Linha: " << token.line 
+        std::cout << "Token: " << tokenTypeName(token.type)
+                  << " | Lexema: '" << token.lexeme << "'"
+                  << " | Linha: " << token.line
                   << " | Coluna: " << token.column << std::endl;
                   
         // Se houver erro léxico, você pode optar por parar ou reportar e continuar
         if (token.type == TokenType::ERROR) {
-            std::cerr << "ERRO LEXICO: Caractere invalido na linha " << token.line << std::endl;
-        }
+    std::cout << "ERRO LEXICO: lexema invalido '"
+              << token.lexeme
+              << "' na linha " << token.line
+              << ", coluna " << token.column
+              << std::endl;
+}
         
     } while (token.type != TokenType::END_OF_FILE);
 

@@ -1,5 +1,6 @@
 #include "../include/SymbolTable.h"
 #include <iostream>
+#include <iomanip>
 
 // Construtor: Pré-carrega as palavras reservadas da linguagem
 SymbolTable::SymbolTable() {
@@ -37,8 +38,10 @@ void SymbolTable::insert(const std::string& lexeme, TokenType type) {
 
 // Imprime a tabela (exigência do relatório da Etapa 1)
 void SymbolTable::printTable() const {
-    std::cout << "LEXEMA | TIPO\n";
+    std::cout << std::left << std::setw(20) << "LEXEMA" << "| TIPO\n";
+    std::cout << std::string(35, '-') << "\n";
     for (const auto& pair : table) {
-        std::cout << pair.first << " | " << static_cast<int>(pair.second) << "\n";
+        std::cout << std::left << std::setw(20) << pair.first
+                  << "| " << tokenTypeName(pair.second) << "\n";
     }
 }
