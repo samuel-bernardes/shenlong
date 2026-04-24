@@ -13,7 +13,7 @@ O trabalho é dividido em três etapas:
 | Etapa | Descrição | Status |
 |-------|-----------|--------|
 | 1 | Analisador Léxico e Tabela de Símbolos | ✅ Concluído |
-| 2 | Analisador Sintático | 🔜 Em desenvolvimento |
+| 2 | Analisador Sintático | ⏳ Pendente |
 | 3 | Analisador Semântico e Gerador de Código | ⏳ Pendente |
 
 ## A Linguagem
@@ -120,7 +120,7 @@ No Windows:
 compilador.exe examples\teste6.txt
 ```
 
-### Saída da Etapa 1
+### Saída da Etapa 1 (Analisador Léxico)
 
 Para cada arquivo processado, o compilador exibe:
 
@@ -155,6 +155,8 @@ media               | IDENTIFIER
 - **`SymbolTable`** (`src/SymbolTable.cpp`) — tabela de símbolos implementada como `unordered_map`, pré-carregada com as 15 palavras reservadas da linguagem. Distingue palavras reservadas de identificadores no momento do `lookup`.
 - **`main`** (`src/main.cpp`) — orquestra a análise: abre o arquivo, consome tokens até EOF, imprime cada token e a tabela de símbolos ao final.
 
-## Autor
+## Autores
 
-Samuel Bernardes — CEFET-MG, Engenharia de Computação
+- Samuel Bernardes — CEFET-MG, Engenharia de Computação
+- Gabriel Pontes — CEFET-MG, Engenharia de Computação
+- Tiago Estevam — CEFET-MG, Engenharia de Computação
