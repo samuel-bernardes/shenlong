@@ -1,41 +1,61 @@
-# Define o compilador e as flags de compilação
+# Compilador e flags
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
 
-# Define os diretórios do projeto
+# Diretórios do projeto
 SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
 
-# Encontra todos os arquivos .cpp na pasta src/
-SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
-
-# Define os nomes dos arquivos objeto (.o) correspondentes
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
-
-# Nome do arquivo executável final
+# Nome do executável final (adiciona .exe no Windows)
 TARGET = compilador
 
-# A regra 'all' é a padrão que será executada ao digitar 'make'
+# Detecção de SO para comandos de shell portáveis
+ifeq ($(OS),Windows_NT)
+    MKDIR = if not exist "$(OBJ_DIR)" mkdir "$(OBJ_DIR)"
+    RM = if exist "$(OBJ_DIR)" rmdir /s /q "$(OBJ_DIR)"
+    RM_TARGET = if exist "$(TARGET).exe" del /q "$(TARGET).exe"
+    SHELL_CMD = cmd /C
+else
+    MKDIR = mkdir -p $(OBJ_DIR)
+    RM = rm -rf $(OBJ_DIR)
+    RM_TARGET = rm -f $(TARGET)
+    SHELL_CMD =
+endif
+
+# Fontes e objetos
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
+OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
+
+# Regra padrão
 all: prepare $(TARGET)
 
-# Cria a pasta de objetos caso ela não exista
+# Cria a pasta de objetos se não existir (não falha se já existir)
 prepare:
-	@mkdir $(OBJ_DIR)
+ifeq ($(OS),Windows_NT)
+	@$(SHELL_CMD) "$(MKDIR)"
+else
+	@$(MKDIR)
+endif
 
-# Regra para linkar os objetos e gerar o executável
+# Linka os objetos no executável final
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
-	@echo "Compilacao concluida com sucesso! Executavel: $(TARGET)"
+	@echo Compilacao concluida. Executavel: $(TARGET)
 
-# Regra para compilar cada .cpp individualmente em um .o
+# Compila cada .cpp em .o
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Regra para limpar os arquivos gerados (útil para recompilar do zero)
+# Remove artefatos de build
 clean:
-	rmdir /s $(OBJ_DIR)
-	@echo "Arquivos limpos."
+ifeq ($(OS),Windows_NT)
+	@$(SHELL_CMD) "$(RM)"
+	@$(SHELL_CMD) "$(RM_TARGET)"
+else
+	@$(RM)
+	@$(RM_TARGET)
+endif
+	@echo Arquivos limpos.
 
-# Evita conflitos com arquivos que tenham os mesmos nomes das regras
 .PHONY: all clean prepare
